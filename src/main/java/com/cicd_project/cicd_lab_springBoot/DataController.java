@@ -1,4 +1,4 @@
-package com.cicd_project.cicd;
+package com.cicd_project.cicd_lab_springBoot;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

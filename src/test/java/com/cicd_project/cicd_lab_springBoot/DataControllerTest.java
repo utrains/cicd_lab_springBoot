@@ -1,4 +1,4 @@
-package com.cicd_project.cicd;
+package com.cicd_project.cicd_lab_springBoot;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
