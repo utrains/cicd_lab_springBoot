@@ -9,13 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cicd_project</groupId>
-	<artifactId>cicd</artifactId>
+	<artifactId>cicd_lab_springBoot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cicd</name>
 	<description>Demo project for Spring Boot with CI/CD</description>
 	<properties>
 		<java.version>11</java.version>
-		<sonar.organization>hermann90</sonar.organization>
+		<sonar.organization>utrains</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
