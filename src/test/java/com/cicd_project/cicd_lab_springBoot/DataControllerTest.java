@@ -12,7 +12,7 @@ public class DataControllerTest {
 
     @Test
     void health() {
-        Assertions.assertEquals( "HEALTH CHECK OK!", dataController.healthCheck());
+        Assertions.assertEquals( "Utrains APP STATUS : \n HEALTH CHECK OK!", dataController.healthCheck());
     }
 
     @Test
