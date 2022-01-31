@@ -509,4 +509,26 @@ git push origin main
 
 - when we open Elastic Beanstalk in aws, we can see that the application is well deployed. Just click on the link in 1, to open the application in another browser tab.
 
-![Elastic Beanstalk](./img_desciption/elastik_beanstalk_result.PNG)
+![Elastic Beanstalk](./img_desciption/app_version.PNG)
+
+* when we open the browser, we can see the state of the application that is created for the root endpoint of our SpringBoot application. 
+
+    ![Elastic Beanstalk](./img_desciption/result.PNG)
+
+The other __Service Rest__ are written in this application as : 
+
+  - version : to display the version of the application. (url/version)
+    
+    ![Elastic Beanstalk App Version](./img_desciption/app_version.PNG)
+
+  - currencies : to display some currency
+
+    ![Elastic Beanstalk App currency](./img_desciption/app_currency.PNG)
+
+  - nations : to display the nations
+
+      ![Elastic Beanstalk App Nations](./img_desciption/app_nations.PNG)
+
+##### We see that the result of displaying the En-point is in JSON format. This is normal because we need to create a front-end that will use this Rest service to perform actions. This work will be done in another Lab. 
+
+## If you arrive here, congratulations you have just set up a Pipeline to deploy a SpringBoot application.
