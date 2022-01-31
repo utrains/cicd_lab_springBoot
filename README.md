@@ -382,13 +382,85 @@ The environment creation will take a few minutes
 
 ## 5. First, you need to add AWS_ACCESS_KEY_ID , AWS_SECRET_ACCESS_KEY , AWS_SESSION_TOKEN to the GitHub secrets.
 
-![SonarCloud auth](./img_desciption/aws_6.PNG)
+To be able to generate this information and continue our configuration in GitHub, we need to : 
+- configure the multi-factor authentication (MFA) in our aws account.
+- install AWSCLIV2
+- then use the information to generate the AWS_ACCESS_KEY_ID , AWS_SECRET_ACCESS_KEY , AWS_SESSION_TOKEN to configure our github secrets Action
+    
+    ### 5.1. Enable a virtual MFA device for an IAM user (console) 
+      1. Sign in to the AWS Management Console and open the IAM console at
+      https://console.aws.amazon.com/iam/
+
+      2. In the navigation pane, choose __Users__.
+
+      3. In the __User Name__ list, choose the name of the intended MFA user.
+
+      4. Choose the __Security credentials__ tab. Next to __Assigned MFA device__, choose __Manage.__
+
+      5. In the __Manage MFA Device__ wizard, choose __Virtual MFA device__, and then choose Continue.
+      IAM generates and displays configuration information for the virtual MFA device, including a QR code graphic. The graphic is a representation of the "secret configuration key" that is available for manual entry on devices that do not support QR codes.
+
+      6. Open your virtual MFA app. For a list of apps that you can use for hosting virtual MFA devices, see http://aws.amazon.com/iam/details/mfa/
+      If the virtual MFA app supports multiple virtual MFA devices or accounts, choose the option to create a new virtual MFA device or account.
+      In my case, I chose the __Authy__ application available on __play store__.
+
+      7. Determine whether the MFA app supports QR codes, and then do one of the following:
+        - From the wizard, choose __Show QR code__, and then use the app to scan the QR code. For example, you might choose the camera icon or choose an option similar to __Scan code__, and then use the device's camera to scan the code.
+        - In the __Manage MFA Device__ wizard, choose __Show secret key__, and then type the secret key into your MFA app. 
+        
+        When you are finished, the virtual MFA device starts generating one-time passwords.
+
+      ![SonarCloud auth](./img_desciption/aws_7.PNG)
+
+      8. In the __Manage MFA Device__ wizard, in the __MFA code 1__ box, type the one-time password that currently appears in the virtual MFA device. Wait up to 30 seconds for the device to generate a new one-time password. Then type the second one-time password into the __MFA code 2__ box. Choose __Assign MFA__.
+
+      Note: Submit your request immediately after generating the codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device is out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can [resync the device](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html).
+
+      click here [For more information on MFA configuration and even for a root user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html)
+
+
+    ### 5.2. Install AWS Client in Windows 
+      Download and run the __AWS CLI MSI installer__ for Windows (64-bit) in one of the following ways: 
+      - [Click here to Download AWSCLIV2](https://awscli.amazonaws.com/AWSCLIV2-2.0.30.msi)
+      
+      - Double click on it to install
+
+      - open the terminal and make this command : aws --version. 
+          ![aws version](./img_desciption/aws_version.PNG)
+
+      - configuration: 
+      we are now going to configure our aws account with AWS Client. you just have to enter the command aws configure, then to enter our Access Key, our Secret Key and our default region.
+          ![aws config](./img_desciption/aws_config.PNG)
+
+      
+    ### 5.3. generate the AWS_ACCESS_KEY_ID , AWS_SECRET_ACCESS_KEY , AWS_SESSION_TOKEN using the prompt 
+
+    If all goes well up to this level, we are ready to generate our AWS_ACCESS_KEY_ID , AWS_SECRET_ACCESS_KEY , AWS_SESSION_TOKEN for a duration of 36 hours. 
+
+    just enter this command : 
+    ### aws sts get-session-token --duration-seconds 129600 --serial-number "arn:aws:iam::XXXXXXXXXXX:mfa/hermann90" --token-code 415203
+    or : 
+      - __--duration-seconds 129600__ : represents the duration of the credential in seconds
+      - __--serial-number__ : represents the information you can get by looking in the credentials of your IAM account.
+      - __--token-code 415203__ : represents the code that your Muli Factor Authentication application generates every 30 seconds.
+  
+        The result of this command contains the AWS_ACCESS_KEY_ID , AWS_SECRET_ACCESS_KEY , AWS_SESSION_TOKEN informations for the configuration of the access session to our server via the __Elastic Beanstalk service__ in AWS. 
+
+      ![SonarCloud auth](./img_desciption/github_secrets_action.PNG)
+
+
+    ### Now let's use this information to finish the configuration of our github account (GitHub Secrets Actions)
+      
+      we must have something like this
+      ![GitHub Secrets Actions](./img_desciption/github_secrets_action.PNG)
  
 ## 6. Now let’s create the deploy job.
 
 * this Job will allow us to retrieve the jar that we uploaded previously in our GitHub.
 
 #### For this task, add the following code to our build.yml file
+
+in the with section of the code below, be sure to put the name of your  __Elastic Beanstalk__ application and the __environment name__ that is created in aws.  
 
 ```
 #Deploy's job
@@ -427,11 +499,14 @@ git push origin main
 ```
 
 - So, here, the job will download the jar file that was uploaded in the build job and deploy it to AWS EB.
-- At this level, the pipeline fails because we do not have the privileges to generate the __AWS_SESSION_TOKEN__. 
+- At this level, the pipeline have good configuration. 
 
 ![SonarCloud auth](./img_desciption/faill_1.PNG)
 
 - if this step is done correctly, our application is well deployed in aws, and we can access it from the generate link in __Elastic Beanstalk__
 
+# test the application deployment.
 
-### to be continued ...
+- when we open Elastic Beanstalk in aws, we can see that the application is well deployed. Just click on the link in 1, to open the application in another browser tab.
+
+![Elastic Beanstalk](./img_desciption/elastik_beanstalk_result.PNG)
